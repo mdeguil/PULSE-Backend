@@ -1,0 +1,5 @@
+package com.pulse.backend.enums;
+
+public enum TypeMetrique {
+    WEEKLY_ACTIVE_DAYS, STREAK_DAYS, WELLBEING_CHECKINS, CHALLENGES_ACTIVE, GOALS_CLOSED, HYDRATION_DAYS
+}
