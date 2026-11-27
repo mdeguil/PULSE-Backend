@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "enabledMcpjsonServers": ["supabase"],
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw:*)",
+      "Bash(mvnw.cmd:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "PowerShell(./mvnw:*)",
+      "PowerShell(.\\mvnw.cmd:*)",
+      "PowerShell(git status:*)",
+      "PowerShell(git diff:*)",
+      "PowerShell(git log:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./**/.env)",
+      "Bash(git push --force:*)",
+      "PowerShell(git push --force:*)"
+    ]
+  }
+}
