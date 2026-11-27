@@ -1,0 +1,16 @@
+com\pulse\backend\entity\enums\MomentPrefere.class
+com\pulse\backend\entity\Contenu.class
+com\pulse\backend\entity\enums\Categorie.class
+com\pulse\backend\entity\enums\TypeContenu.class
+com\pulse\backend\entity\Defi.class
+com\pulse\backend\entity\Participation.class
+com\pulse\backend\entity\enums\StatutObjectif.class
+com\pulse\backend\entity\enums\StatutDefi.class
+com\pulse\backend\entity\enums\StatutContenu.class
+com\pulse\backend\entity\enums\TypeMetrique.class
+com\pulse\backend\entity\Preference.class
+com\pulse\backend\PulseBackendApplication.class
+com\pulse\backend\entity\enums\StatutParticipation.class
+com\pulse\backend\entity\enums\FrequenceRappel.class
+com\pulse\backend\entity\Metrique.class
+com\pulse\backend\entity\Objectif.class
