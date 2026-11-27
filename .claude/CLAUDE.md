@@ -44,7 +44,7 @@ If something is marked _TODO_ or is an open question in `decisions.md`, ask inst
 - `Mock/`: authentication **simulator** (separate from PULSE code — ACC-QUAL-01). Not built yet.
 - `docs/`: project documentation; `docs/specs/`: reference specifications.
 - `.mcp.json`: MCP servers (Supabase, read-only).
-- `.github/CODEOWNERS`: every change must be reviewed by mdeguil.
+- `.github/CODEOWNERS`: mdeguil is code owner; enforced on `main` only.
 
 ## Stack
 
@@ -82,7 +82,8 @@ Team rules are in two skills — follow them for every commit and pull request:
 
 - `.claude/skills/pulse-commit-convention/SKILL.md`: format `Type : description in English`, one logical change per commit,
   and a **mandatory review by the `commit-reviewer` agent** (`.claude/agents/commit-reviewer.md`) before any commit — no commit without verdict OK.
-- `.claude/skills/pulse-pull-request-rules/SKILL.md`: PR from the work branch to its reference branch (`backend` or `mock`), title in commit format, ticket statuses, "Create a merge commit" only.
+- `.claude/skills/pulse-pull-request-rules/SKILL.md`: PR from the work branch to its reference branch (`backend` or `mock`), title in commit format, "Create a merge commit" only.
+  Human review is required **only for PRs targeting `main`**; other PRs are merged by their owner without a reviewer.
 
 Branches in this repository (the skills refer to this section for the base and target branch):
 
@@ -94,6 +95,6 @@ main (production) ← dev (integration) ← backend (reference: PULSE app)  ← 
 - Every change is made on a work branch created from `backend` (PULSE code) or `mock` (simulator code, `Mock/`).
 - Pull requests from a work branch target that reference branch (`backend` or `mock`), not `dev`.
 - `backend` and `mock` are merged into `dev`, then `dev` into `main`, through pull requests.
-- Never commit directly on `main`, `dev`, `backend` or `mock`. Every change is also reviewed by mdeguil (`.github/CODEOWNERS`).
+- Never commit directly on `main`, `dev`, `backend` or `mock`. Only `main` is protected on GitHub (ruleset "verif merge", code owner mdeguil in `.github/CODEOWNERS`).
 - Never commit secrets (Supabase keys, `.env`, `.claude/settings.local.json`).
 - The GitHub repository is **public**.

@@ -43,7 +43,7 @@ The diff does not mix several topics (e.g. a feature + a refactor + unrelated do
 
 ### 4. Debug leftovers and sensitive files
 
-- Java: `System.out.println`, `System.err`, `printStackTrace()`, `@Disabled` tests without a reason, `TODO`s without a ticket.
+- Java: `System.out.println`, `System.err`, `printStackTrace()`, `@Disabled` tests without a reason, forgotten `TODO`s.
 - JavaScript (if any): debug `console.log`.
 - Forgotten commented-out code.
 - Forbidden files in the diff: `.env`, API keys, passwords (demo ones included), `.claude/settings.local.json`, `.idea/`, `target/`, `node_modules/`, `docs/specs/`.
