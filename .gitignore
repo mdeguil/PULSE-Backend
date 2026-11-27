@@ -1,0 +1,8 @@
+# Claude Code: personal settings (not shared)
+.claude/settings.local.json
+
+# IntelliJ IDEA
+.idea/
+
+# Reference specifications (internal documents, not published)
+docs/specs/
