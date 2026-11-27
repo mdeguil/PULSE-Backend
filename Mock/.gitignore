@@ -1,0 +1,10 @@
+__pycache__/
+.venv/
+.pytest_cache/
+*.db
+.env
+node_modules/
+.agents/
+package-lock.json
+package.json
+skills-lock.json
