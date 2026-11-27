@@ -1,58 +1,91 @@
-# Mock API d'authentification PULSE
+# API PULSE — démarrage et configuration
 
-Mock du contrat d'authentification HAC-API-001 v1.2, connecté au projet
-Supabase configuré dans `Mock/.env`.
+Ce dossier contient la Mock API d'authentification HAC-API-001 v1.2. Elle
+consulte Supabase. Le backend Java PULSE est un service séparé et relaie les
+appels d'authentification vers cette API.
 
-## Tables utilisées
+## Démarrer la Mock API avec Docker
 
-La mock API utilise uniquement la table d'authentification suivante :
+Créer `Mock/.env` avec les identifiants du projet Supabase :
 
-| Table Supabase | État | Colonnes utilisées |
-|---|---|---|
-| `public.utilisateur` | Déjà existante | `user_id`, `email`, `password_hash`, `display_name`, `role`, `account_status` |
-
-`db.py` adapte les colonnes françaises/en `snake_case` au format JSON attendu
-par le contrat de l'API (`userId`, `displayName`, `accountStatus`, etc.).
-Le jeton de démonstration a la forme `demo-token-<userId>` et est résolu en
-recherchant directement l'utilisateur dans `utilisateur`. Il n'est pas stocké
-en base.
-Les tables métier `preference`, `objectif`, `defi`, `participation`,
-`progression` et `contenu` ne sont pas utilisées par cette mock API; elles ne
-sont donc pas recréées ici.
-
-La mock API ne crée, ne modifie ni ne supprime aucune table ou colonne
-Supabase.
-
-Les utilisateurs doivent avoir un mot de passe haché au format PBKDF2
-`pbkdf2_sha256$...` attendu par `security.py`. L'email est recherché en
-minuscules. Les rôles et statuts doivent correspondre à ceux attendus par
-l'API, notamment `USER` / `FUNCTIONAL_ADMIN` et `ACTIVE` / `DISABLED`.
-
-## Configuration et démarrage
-
-Dans `Mock/.env`, configurer `SUPABASE_URL` et `SUPABASE_SECRET_KEY` avec les
-valeurs du même projet. Garder la clé serveur secrète; ne pas utiliser la clé
-publishable/anon côté API. `SUPABASE_SERVICE_ROLE_KEY` est accepté comme nom
-alternatif.
-
-```bash
-python -m pip install -r requirements.txt
-python app.py
-pytest -v
+```dotenv
+SUPABASE_URL=https://<projet>.supabase.co
+SUPABASE_SECRET_KEY=<cle-secrete-serveur>
 ```
 
-Le client Supabase est créé au démarrage. Les erreurs d'accès aux tables ou de
-connexion sont journalisées côté serveur et retournent un `503` au client.
-Les tests utilisent un faux client mémoire et ne modifient pas le projet
-Supabase.
+`SUPABASE_SERVICE_ROLE_KEY` est accepté comme nom alternatif. Ne jamais
+utiliser la clé publishable/anon pour l'API serveur, ni committer ce fichier.
 
-## Endpoints
+Depuis la racine du dépôt, construire et démarrer uniquement la Mock API :
 
-| Méthode | Route | Description |
+```powershell
+docker compose -f Mock/docker/docker-compose.yml up --build -d
+```
+
+Pour consulter les logs et arrêter les services :
+
+```powershell
+docker compose -f Mock/docker/docker-compose.yml logs -f
+docker compose -f Mock/docker/docker-compose.yml down
+```
+
+La Mock API est accessible depuis l'hôte sur `http://localhost:5000`.
+Le port hôte peut être changé avec `API_PORT` :
+
+```powershell
+$env:API_PORT = "5001"
+docker compose -f Mock/docker/docker-compose.yml up --build -d
+```
+
+## Routes d'authentification
+
+Les routes exposées par la Mock API sont :
+
+| Méthode | Route | Résultat |
 |---|---|---|
-| POST | `/api/v1/auth/login` | Vérifie email et mot de passe, retourne un jeton Bearer |
-| GET | `/api/v1/auth/me` | Retourne l'identité associée au jeton |
+| POST | `/api/v1/auth/login` | Vérifie `email` et `password`; retourne un jeton Bearer |
+| GET | `/api/v1/auth/me` | Retourne l'identité correspondant au jeton Bearer |
 
-Routes de recette : `SIMULATE_UNAVAILABLE=true`, `POST /simulator/unavailable`
-avec `{"enabled": true|false}`, ou l'en-tête
+Le backend PULSE relaie ces routes et leurs réponses quand il est démarré
+séparément. Depuis un processus Java lancé sur l'hôte, l'adresse par défaut
+de l'API amont est `http://localhost:5000`. Depuis un conteneur séparé, la
+configuration doit utiliser une adresse joignable depuis ce conteneur; son
+`localhost` ne pointe pas vers la Mock API.
+
+## Supabase et schéma existant
+
+La Mock API utilise uniquement la table existante `public.utilisateur` et les
+colonnes `user_id`, `email`, `password_hash`, `display_name`, `role` et
+`account_status`. Elle ne crée ni ne modifie aucune table ou colonne.
+Les utilisateurs doivent avoir un mot de passe PBKDF2 au format
+`pbkdf2_sha256$...`; les rôles/statuts attendus sont `USER` ou
+`FUNCTIONAL_ADMIN`, et `ACTIVE` ou `DISABLED`.
+
+Les jetons démo sont de la forme `demo-token-<userId>` et ne sont pas stockés
+en base. Le backend Java ne reçoit pas les secrets Supabase.
+
+## Développement sans Docker
+
+La Mock API peut être lancée seule depuis `Mock` avec :
+
+```powershell
+python -m pip install -r requirements.txt
+python app.py
+python -m pytest -q
+```
+
+Le backend Java peut être lancé séparément depuis `pulse`. Sa propriété
+`PULSE_AUTH_API_BASE_URL` doit pointer vers la Mock API (par défaut
+`http://localhost:5000`) :
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+## Simulation des erreurs d'authentification
+
+La Mock API expose les routes de contrat `POST /api/v1/auth/login` et
+`GET /api/v1/auth/me`, avec les réponses `400`, `401`, `403` et `503`.
+Pour simuler une indisponibilité, définir `SIMULATE_UNAVAILABLE=true`, appeler
+`POST /simulator/unavailable` avec `{"enabled": true|false}`, ou envoyer
 `X-Simulate-Unavailable: true`.
