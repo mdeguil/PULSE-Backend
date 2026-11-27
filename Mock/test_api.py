@@ -1,5 +1,6 @@
 """Tests de conformité du simulateur au contrat HAC-API-001 (cas 200/400/401/403/503).
 Lancer avec :  pytest -v"""
+import bcrypt
 import pytest
 
 INES = {"email": "ines.moreau@demo.healthaicoach.fr", "password": "TestPassword!"}
@@ -22,6 +23,22 @@ def test_login_200_user(client):
 def test_login_200_admin_role(client):
     r = client.post("/api/v1/auth/login", json=ADMIN)
     assert r.status_code == 200 and r.get_json()["role"] == "FUNCTIONAL_ADMIN"
+
+
+@pytest.mark.parametrize("bcrypt_prefix", ["2a", "2b", "2y"])
+def test_login_accepts_bcrypt_password_hash(client, supabase, bcrypt_prefix):
+    stored_hash = bcrypt.hashpw(
+        INES["password"].encode("utf-8"),
+        bcrypt.gensalt(rounds=4),
+    ).decode("ascii")
+    supabase.tables["utilisateur"][0]["password_hash"] = (
+        f"${bcrypt_prefix}${stored_hash.split('$', 2)[2]}"
+    )
+
+    response = client.post("/api/v1/auth/login", json=INES)
+
+    assert response.status_code == 200
+    assert response.get_json()["accessToken"] == "demo-token-usr-20041"
 
 
 def test_login_email_is_case_insensitive(client):

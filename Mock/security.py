@@ -10,6 +10,8 @@ import hashlib
 import hmac
 import secrets
 
+import bcrypt
+
 ITERATIONS = 100_000
 
 
@@ -20,7 +22,24 @@ def hash_password(password: str, salt: bytes | None = None) -> str:
 
 
 def verify_password(password: str, stored: str) -> bool:
-    """Vérifie un mot de passe contre un hash stocké (temps constant)."""
+    """Vérifie un mot de passe contre un hash PBKDF2 ou bcrypt stocké."""
+    if not isinstance(stored, str):
+        return False
+
+    bcrypt_hash = stored
+    if bcrypt_hash.startswith("bcrypt$"):
+        bcrypt_hash = bcrypt_hash[len("bcrypt"):]
+    if bcrypt_hash.startswith(("$2a$", "$2b$", "$2y$")):
+        if bcrypt_hash.startswith("$2y$"):
+            bcrypt_hash = "$2b$" + bcrypt_hash[4:]
+        try:
+            return bcrypt.checkpw(
+                password.encode("utf-8"),
+                bcrypt_hash.encode("ascii"),
+            )
+        except ValueError:
+            return False
+
     try:
         algo, iterations, salt_hex, hash_hex = stored.split("$")
         if algo != "pbkdf2_sha256":

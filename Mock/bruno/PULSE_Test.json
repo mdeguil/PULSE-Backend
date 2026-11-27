@@ -1,0 +1,186 @@
+{
+  "name": "PULSE_Test",
+  "version": "1",
+  "items": [
+    {
+      "type": "http",
+      "name": "API_Test",
+      "filename": "API_Test.bru",
+      "seq": 1,
+      "settings": {
+        "encodeUrl": true,
+        "timeout": 0
+      },
+      "tags": [],
+      "examples": [],
+      "request": {
+        "url": "{{mockBaseUrl}}/simulator/unavailable",
+        "method": "GET",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "inherit"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "Auth_TEST",
+      "filename": "Auth_TEST.bru",
+      "seq": 2,
+      "settings": {
+        "encodeUrl": true,
+        "timeout": 0
+      },
+      "tags": [],
+      "examples": [],
+      "request": {
+        "url": "{{pulseBaseUrl}}/api/v1/auth/login",
+        "method": "POST",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"email\": \"alex.martin@demo.healthaicoach.fr\",\n  \"password\": \"DemoPassword!\"\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "inherit"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "API_Test_Request",
+      "filename": "API_Test_Request.bru",
+      "seq": 3,
+      "settings": {
+        "encodeUrl": true,
+        "timeout": 0
+      },
+      "tags": [],
+      "examples": [],
+      "request": {
+        "url": "http://localhost:5000/api/v1/auth/login",
+        "method": "POST",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"email\": \"alex.martin@demo.healthaicoach.fr\",\n  \"password\": \"DemoPassword!\"\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "inherit"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "Token_TEST",
+      "filename": "Token_TEST.bru",
+      "seq": 4,
+      "settings": {
+        "encodeUrl": true,
+        "timeout": 0
+      },
+      "tags": [],
+      "examples": [],
+      "request": {
+        "url": "{{pulseBaseUrl}}/api/v1/auth/me",
+        "method": "GET",
+        "headers": [
+          {
+            "name": "Authorization",
+            "value": "Bearer demo-token-usr-10027",
+            "enabled": true
+          }
+        ],
+        "params": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "inherit"
+        }
+      }
+    }
+  ],
+  "activeEnvironmentUid": "VQg1DFplCc0nqTtw1lG8L",
+  "environments": [
+    {
+      "variables": [
+        {
+          "name": "pulseBaseUrl",
+          "value": "http://localhost:8080",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "mockBaseUrl",
+          "value": "http://localhost:5000",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "accessToken",
+          "value": "",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        }
+      ],
+      "name": "PULSE_Test_env"
+    }
+  ],
+  "brunoConfig": {
+    "version": "1",
+    "name": "PULSE_Test",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ],
+    "size": 0,
+    "filesCount": 0,
+    "presets": {
+      "requestType": "http",
+      "requestUrl": ""
+    }
+  }
+}

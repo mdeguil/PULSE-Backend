@@ -3,4 +3,5 @@ python-dotenv>=1.0
 supabase>=2.0
 websockets>=13,<16
 gunicorn>=22,<24
+bcrypt>=4,<6
 pytest>=8.0
