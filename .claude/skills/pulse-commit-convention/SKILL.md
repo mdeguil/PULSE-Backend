@@ -28,7 +28,6 @@ If the change needs an explanation, leave a blank line and add a body in English
 Fix : prevent HomePage from crashing when user has no challenge
 
 The API returns null instead of an empty array for new users.
-Closes #12
 ```
 
 ## Allowed types
@@ -57,7 +56,6 @@ A commit has only one type. If it needs two, make two commits.
 7. Do not repeat the type in the description (`Fix : fix login` says nothing).
 8. One commit = one logical change, no catch-all commits.
 9. Forbidden messages: `update`, `fix`, `wip`, `test`, `modif`, `.` or any message that says nothing.
-10. Link the ticket when there is one, in the body: `Closes #12` or `Refs #12`.
 
 ## Good and bad examples
 

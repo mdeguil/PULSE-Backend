@@ -1,36 +1,33 @@
 ---
 name: pulse-pull-request-rules
-description: PULSE team pull request rules. Use them to open, review, comment on or merge a PR in the PULSE project, and to know which status the ticket should be in.
+description: PULSE team pull request rules. Use them to open, review, comment on or merge a PR in the PULSE project, and to know whether a human review is required.
 ---
 
 # PULSE pull request rules
 
-A PR gets your work reviewed by another team member before it reaches the target branch. Each step of the PR moves the ticket forward on the board.
+A PR moves work from one branch to the next one up (see `.claude/CLAUDE.md`, section Git):
+work branch → `backend` / `mock` → `dev` → `main`.
 
-This skill covers PRs from a work branch to its target branch (in this repository: `backend` or `mock`, see `.claude/CLAUDE.md`, section Git). Promoting `dev` to `main` is a separate topic.
+**A review by another team member is only required for PRs targeting `main`.** Every other PR is merged by its owner
+without a human review — each commit has already been checked by the `commit-reviewer` agent (skill `pulse-commit-convention`).
 
-## Ticket workflow
+## Which PR needs what
 
-The statuses are the team board's own labels — use them exactly as written, do not rename them.
+| PR | Human review | Who merges |
+| --- | --- | --- |
+| work branch → `backend` or `mock` | not required | the branch owner |
+| `backend` / `mock` → `dev` | not required | the branch owner |
+| `dev` → `main` | **required** (approval by another member) | the PR author, after approval |
 
-| Moment | Ticket status |
-| --- | --- |
-| The developer is working on the ticket | `En cours` |
-| The PR is opened (or fixes are pushed) | `À relire` |
-| At least one comment is left on the PR | `En cours` |
-| The PR is approved | `À merge` |
-| The branch is merged into the target branch | `À tester en recette` |
-
-If the PR is approved without any comment, the ticket goes straight from `À relire` to `À merge`.
-
-## Opening a PR
+## Opening a PR (all PRs)
 
 1. The PR is opened by the branch owner.
-2. It always targets the branch the work branch was created from (`backend` or `mock` in this repository).
-3. One PR = one ticket. If it covers several tickets, split it.
+2. It targets the next branch up: a work branch targets the branch it was created from (`backend` or `mock`);
+   `backend` / `mock` target `dev`; `dev` targets `main`.
+3. A PR from a work branch covers one topic; if it covers several unrelated topics, split it.
+   Promotion PRs (`backend` / `mock` → `dev`, `dev` → `main`) naturally group several topics.
 4. The title follows the commit convention: `Type : description in English` (e.g. `Feature : add challenge list page`).
 5. The description contains:
-    - the ticket number or link (e.g. `Ticket #301`);
     - what changed;
     - how to test;
     - a screenshot if the display changed.
@@ -38,18 +35,16 @@ If the PR is approved without any comment, the ticket goes straight from `À rel
     - `git pull origin <target branch>` and resolve conflicts on your branch;
     - check that the project starts and that the lint passes (backend: `./mvnw test` from `pulse/`);
     - review your own changes in the *Files changed* tab.
-7. If the work is not finished but you want feedback, open the PR as a *Draft*. The ticket stays `En cours`.
-8. Once the PR is open, the ticket moves to `À relire`.
+7. If the work is not finished, open the PR as a *Draft*.
 
-## Choosing the reviewer
+## PRs targeting `main`: review
 
-- The PR is reviewed by the second person assigned to the ticket.
-- If the ticket has only one assignee, either:
-    - the author picks a reviewer in the team and adds them to the ticket;
-    - or the PR is reviewed by the project lead.
+### Choosing the reviewer
+
+- The author picks a reviewer in the team, or the PR is reviewed by the project lead.
 - Never review your own PR.
 
-## Reviewing a PR
+### Reviewing
 
 - The reviewer reviews within 24 working hours.
 - Every comment starts with a prefix that gives its weight:
@@ -57,28 +52,25 @@ If the PR is approved without any comment, the ticket goes straight from `À rel
     - `suggestion:` optional improvement;
     - `question:` request for explanation.
 - Comments are about the code, never about the person, and suggest a solution when possible.
-- As soon as at least one comment is left, the ticket moves to `En cours`.
-- If everything is fine, the reviewer approves the PR (*Approve*) and the ticket moves to `À merge`.
+- If everything is fine, the reviewer approves the PR (*Approve*).
 
-## Handling comments
+### Handling comments
 
-- The branch owner fixes the code, or replies to the comment if they think they are right.
-- Once the fixes are pushed, they request a new review (*Re-request review*) and the ticket goes back to `À relire`.
+- The author fixes the code, or replies to the comment if they think they are right.
+- Once the fixes are pushed, they request a new review (*Re-request review*).
 - The person who wrote the comment marks the conversation as resolved, not the PR author.
 - If both still disagree after discussing, the team decides at the next team meeting.
 
-## Merging
+## Merging (all PRs)
 
-- Never merge a PR without approval.
-- When the ticket is `À merge`, the branch owner merges it themselves.
-- Choose **"Create a merge commit"**, never *Squash* or *Rebase*: work branches are reused, and a squash would bring conflicts back at the next merge.
+- A PR targeting `main` is never merged without approval.
+- Choose **"Create a merge commit"**, never *Squash* or *Rebase*: branches are reused, and a squash would bring conflicts back at the next merge.
 - Do not delete your branch after merging.
-- After merging:
-    - the ticket moves to `À tester en recette`;
-    - the owner runs `git pull origin <target branch>` on their branch before starting another ticket.
+- After merging, run `git pull origin <target branch>` on your branch before starting new work.
 
 ## How to apply this skill
 
-- To write a PR: suggest a title in the commit format and a description with the four required items.
-- To review: write comments with the `blocking:`, `suggestion:` or `question:` prefixes.
-- When asked "where is the ticket at" or "what do I do now": give the next step and the matching board status.
+- To write a PR: suggest a title in the commit format and a description with the required items.
+- For a PR not targeting `main`: do not request a reviewer; the owner merges it themselves with a merge commit.
+- For a PR targeting `main`: request a reviewer, and write review comments with the `blocking:`, `suggestion:` or `question:` prefixes.
+- When asked "what do I do now": give the next step of the PR.
