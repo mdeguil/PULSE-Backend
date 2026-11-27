@@ -3,7 +3,7 @@
 from flask import current_app
 from supabase import Client, create_client
 
-USER_TABLE = "users"
+USER_TABLE = "user"
 USER_COLUMNS = "user_id,email,password_hash,display_name,role,account_status"
 DEMO_TOKEN_PREFIX = "demo-token-"
 
